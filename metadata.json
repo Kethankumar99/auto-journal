@@ -1,0 +1,6 @@
+{
+  "name": "Auto Journal",
+  "description": "Universal document ledger platform that automatically parses any statement, lists, or logs into a clean transaction ledger with 10/10 visualizations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

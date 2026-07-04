@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto-Journal Uploader</title>
+    <!-- Use Tailwind CDN for beautiful styling in the extension popup -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      body {
+        width: 360px;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+      .drag-area.active {
+        border-color: #3b82f6;
+        background-color: #eff6ff;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="p-5">
+      <!-- Header -->
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-200">
+          AJ
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-gray-800">Auto-Journal AI</h1>
+          <p class="text-xs text-gray-500 font-medium">Financial Document Processor</p>
+        </div>
+      </div>
+
+      <!-- Settings / Backend URL (Collapsible/Editable) -->
+      <div class="mb-4 bg-gray-100 p-2.5 rounded-lg text-xs">
+        <label class="block text-gray-600 font-semibold mb-1">Backend Server URL:</label>
+        <input type="url" id="serverUrl" class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-800 focus:outline-none focus:border-blue-500" value="https://ais-dev-ohnoufpgfkpn24azw7aus6-1030814835639.asia-southeast1.run.app" />
+        <p class="text-xxs text-gray-400 mt-1">Make sure this matches your deployed or dev application URL.</p>
+      </div>
+
+      <!-- Drag & Drop PDF Box -->
+      <div id="dragArea" class="drag-area border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 transition-colors bg-white">
+        <div class="flex flex-col items-center">
+          <svg class="w-10 h-10 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <p class="text-sm font-semibold text-gray-700">Drag & Drop PDF here</p>
+          <p class="text-xs text-gray-400 mt-1">or click to browse from files</p>
+          <p class="text-xxs text-gray-400 mt-2">PDF files up to 5MB are supported</p>
+        </div>
+        <input type="file" id="fileInput" accept="application/pdf" class="hidden" />
+      </div>
+
+      <!-- Progress & Status Indicator -->
+      <div id="statusContainer" class="hidden mt-4 bg-white border border-gray-100 p-4 rounded-xl shadow-sm">
+        <div class="flex items-center space-x-3">
+          <!-- Spinner -->
+          <div id="spinner" class="animate-spin rounded-full h-5 w-5 border-2 border-blue-500 border-t-transparent"></div>
+          <!-- Success Tick -->
+          <svg id="successIcon" class="hidden h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <!-- Error Cross -->
+          <svg id="errorIcon" class="hidden h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          
+          <div class="flex-1 min-w-0">
+            <p id="statusHeading" class="text-xs font-bold text-gray-800">Uploading file...</p>
+            <p id="statusDetails" class="text-xxs text-gray-500 truncate">Converting to base64...</p>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div id="progressTrack" class="w-full bg-gray-100 rounded-full h-1.5 mt-3">
+          <div id="progressBar" class="bg-blue-600 h-1.5 rounded-full" style="width: 10%"></div>
+        </div>
+        <p id="progressPercent" class="text-right text-xxs text-gray-400 font-semibold mt-1">10%</p>
+      </div>
+
+      <!-- Dashboard Button -->
+      <div id="actionContainer" class="hidden mt-4">
+        <button id="viewDashboardBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-2 px-4 rounded-xl shadow transition-colors flex items-center justify-center space-x-2">
+          <span>Go to Auto-Journal Dashboard</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Script connection -->
+    <script src="popup.js"></script>
+  </body>
+</html>

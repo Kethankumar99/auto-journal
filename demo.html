@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto-Journal Ledger Analyser - Interactive Product Walkthrough</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .heading-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .mono-font {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Simple custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md shadow-blue-500/20">
+          <i data-lucide="calculator" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="text-lg font-black text-slate-900 tracking-tight heading-font">Auto-Journal</span>
+          <span class="text-xs block text-slate-500 font-semibold -mt-1 uppercase tracking-wider">Ledger Analyser</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200/50">
+          <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-1.5 animate-pulse"></span>
+          Interactive Walkthrough
+        </span>
+        <a href="/" class="hidden sm:inline-flex items-center space-x-1 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+          <span>Go to Real App</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero introduction banner -->
+  <section class="bg-gradient-to-b from-white to-slate-50/50 border-b border-slate-200/50 py-12 px-6">
+    <div class="max-w-4xl mx-auto text-center space-y-4">
+      <h1 class="text-3xl md:text-5xl font-black text-slate-950 tracking-tight heading-font leading-tight">
+        Experience the Next Gen <span class="text-blue-600">Financial Parser</span>
+      </h1>
+      <p class="text-sm md:text-base text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed">
+        Upload trading statements, invoices, or ledger documents in any format (PDF, Excel, Word). Let AI extract, classify, and visualize your financial activities in an instant. Use this demo to try the entire experience with zero setup!
+      </p>
+      <div class="flex justify-center space-x-6 text-xs text-slate-500 font-bold uppercase tracking-wider pt-2">
+        <span class="flex items-center"><i data-lucide="file-check-2" class="w-4 h-4 mr-1 text-emerald-600"></i> No Sign-In Needed</span>
+        <span class="flex items-center"><i data-lucide="sparkles" class="w-4 h-4 mr-1 text-blue-600"></i> Simulated AI Core</span>
+        <span class="flex items-center"><i data-lucide="image" class="w-4 h-4 mr-1 text-purple-600"></i> Image & PDF Export</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Sandbox Playground -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-8">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden min-h-[620px] flex flex-col transition-all duration-500">
+      
+      <!-- Interactive Screen Container -->
+      <div class="flex-1 flex flex-col relative" id="walkthrough-viewport">
+        
+        <!-- ==================== STAGE 1: UPLOAD SCREEN (ACTIVE BY DEFAULT) ==================== -->
+        <div id="stage-upload" class="flex-1 flex flex-col items-center justify-center p-8 md:p-16 text-center space-y-8 animate-fade-in">
+          <div class="max-w-md space-y-3">
+            <div class="mx-auto w-20 h-20 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm animate-bounce">
+              <i data-lucide="upload-cloud" class="w-10 h-10"></i>
+            </div>
+            <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight heading-font">
+              Upload Your Ledger or Trading Statement
+            </h2>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Drag and drop any statement or ledger log, or click below to select our pre-configured premium trading log to see the extraction pipeline instantly.
+            </p>
+          </div>
+
+          <!-- Dropzone area -->
+          <div 
+            onclick="triggerDemoExtraction()"
+            class="max-w-lg w-full border-2 border-dashed border-slate-200 hover:border-blue-500 hover:bg-blue-50/10 rounded-2xl p-8 cursor-pointer transition-all duration-300 group"
+          >
+            <div class="space-y-3">
+              <div class="flex justify-center space-x-2">
+                <span class="p-2 bg-slate-100 group-hover:bg-blue-100 rounded-lg text-slate-400 group-hover:text-blue-600 transition-colors"><i data-lucide="file-text" class="w-5 h-5"></i></span>
+                <span class="p-2 bg-slate-100 group-hover:bg-blue-100 rounded-lg text-slate-400 group-hover:text-blue-600 transition-colors"><i data-lucide="sheet" class="w-5 h-5"></i></span>
+                <span class="p-2 bg-slate-100 group-hover:bg-blue-100 rounded-lg text-slate-400 group-hover:text-blue-600 transition-colors"><i data-lucide="file-check" class="w-5 h-5"></i></span>
+              </div>
+              <p class="text-xs font-bold text-slate-700 group-hover:text-blue-600 transition-colors">
+                Click to load sample trading statement "Trading_Log_2026.xlsx"
+              </p>
+              <p class="text-[10px] text-slate-400 font-medium">
+                Supports PDF, XLSX, CSV, and DOCX formats (Up to 15MB)
+              </p>
+            </div>
+          </div>
+
+          <!-- Sample Statement Picker Box -->
+          <div class="w-full max-w-xl bg-slate-50 border border-slate-200/60 rounded-xl p-4 flex items-center justify-between text-left">
+            <div class="flex items-center space-x-3">
+              <div class="p-2 bg-emerald-100 text-emerald-800 rounded-lg"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+              <div>
+                <p class="text-xs font-bold text-slate-800">Quick Start Sandbox Log</p>
+                <p class="text-[10px] text-slate-400 font-semibold">18 trade entries • 3 categories • Verified Clean Statement</p>
+              </div>
+            </div>
+            <button 
+              onclick="triggerDemoExtraction()"
+              class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+            >
+              <span>Use Sample</span>
+              <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== STAGE 2: AI EXTRACTION ENGINE (HIDDEN BY DEFAULT) ==================== -->
+        <div id="stage-extracting" class="hidden flex-1 flex flex-col justify-center items-center p-8 md:p-16 space-y-8 bg-slate-950 text-white select-none">
+          <div class="max-w-md w-full space-y-6 text-center">
+            
+            <!-- Scanning Visualizer -->
+            <div class="relative w-24 h-24 mx-auto flex items-center justify-center">
+              <!-- Outer glowing spinning rings -->
+              <div class="absolute inset-0 rounded-3xl border border-blue-500/20 animate-pulse"></div>
+              <div class="absolute inset-2 rounded-2xl border-2 border-dashed border-blue-500/40 animate-spin" style="animation-duration: 8s;"></div>
+              <!-- Inner scan line -->
+              <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <i data-lucide="cpu" class="w-7 h-7 text-white animate-pulse"></i>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <h3 class="text-lg font-black heading-font tracking-tight">AI Engine Statement Analysis</h3>
+              <p class="text-xs text-slate-400 font-medium">Extracting and parsing transaction data via simulated AI core...</p>
+            </div>
+
+            <!-- Fake Progress bar -->
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700">
+              <div id="extraction-progress" class="bg-gradient-to-r from-blue-500 via-emerald-400 to-blue-600 h-full rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+            </div>
+
+            <!-- Terminal output logs mimicking the system parsing -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-left font-mono text-[10px] text-slate-300 space-y-2 overflow-hidden h-36 relative">
+              <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
+              <div id="terminal-logs" class="space-y-1">
+                <!-- Javascript will inject real-looking logs sequentially here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== STAGE 3: INTERACTIVE REPORT SCREEN (HIDDEN BY DEFAULT) ==================== -->
+        <div id="stage-report" class="hidden flex-1 flex flex-col bg-slate-50 min-h-[620px]">
+          
+          <!-- Report Header Bar -->
+          <div class="bg-slate-900 text-white px-6 md:px-8 py-4 flex items-center justify-between border-b border-slate-800 shadow-md shrink-0">
+            <div class="flex items-center space-x-3">
+              <button 
+                onclick="resetDemo()" 
+                class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-300 hover:text-white transition-colors cursor-pointer"
+                title="Upload another statement"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              </button>
+              <div>
+                <span class="inline-flex items-center space-x-1.5 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full text-[9px] font-bold text-blue-400 uppercase tracking-wider">
+                  <span class="w-1 h-1 bg-blue-400 rounded-full animate-ping"></span>
+                  <span>Demo Mode</span>
+                </span>
+                <h1 class="text-xs md:text-sm font-extrabold text-white tracking-tight -mt-0.5 max-w-[150px] sm:max-w-[300px] truncate" id="report-filename">
+                  Trading_Log_2026.xlsx
+                </h1>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <!-- Export Buttons -->
+              <button
+                onclick="triggerExport('PDF')"
+                class="inline-flex items-center space-x-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-emerald-950/20"
+              >
+                <i data-lucide="file-down" class="w-3.5 h-3.5"></i>
+                <span>Download PDF Report</span>
+              </button>
+
+              <button
+                onclick="triggerExport('Image')"
+                class="inline-flex items-center space-x-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-extrabold rounded-xl transition-all cursor-pointer shadow-md shadow-blue-950/20"
+              >
+                <i data-lucide="image-down" class="w-3.5 h-3.5"></i>
+                <span>Convert as Image</span>
+              </button>
+
+              <button
+                onclick="resetDemo()"
+                class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl transition-colors cursor-pointer"
+                title="Restart Walkthrough"
+              >
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Walkthrough Tabs Row -->
+          <div class="bg-white border-b border-slate-200/60 flex px-6 md:px-8 shrink-0 shadow-sm overflow-x-auto">
+            <button
+              id="tab-btn-full"
+              onclick="switchTab('full')"
+              class="py-3 px-4 font-black text-xs border-b-2 border-blue-600 text-blue-600 transition-all cursor-pointer whitespace-nowrap"
+            >
+              Full Report View
+            </button>
+            <button
+              id="tab-btn-overview"
+              onclick="switchTab('overview')"
+              class="py-3 px-4 font-bold text-xs border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all cursor-pointer whitespace-nowrap"
+            >
+              Overview Summary
+            </button>
+            <button
+              id="tab-btn-charts"
+              onclick="switchTab('charts')"
+              class="py-3 px-4 font-bold text-xs border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all cursor-pointer whitespace-nowrap"
+            >
+              Visual Charts
+            </button>
+            <button
+              id="tab-btn-table"
+              onclick="switchTab('table')"
+              class="py-3 px-4 font-bold text-xs border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all cursor-pointer whitespace-nowrap"
+            >
+              Transaction Ledger Table
+            </button>
+          </div>
+
+          <!-- Printable Area Container -->
+          <div class="flex-1 overflow-y-auto p-4 md:p-8" id="report-tab-container">
+            
+            <!-- ==================== SUB-TAB 1: FULL REPORT (SHOWS ALL CONSOLIDATED) ==================== -->
+            <div id="tab-content-full" class="space-y-6 max-w-5xl mx-auto">
+              
+              <!-- Report Executive Header Block -->
+              <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <div class="inline-flex items-center space-x-2 bg-emerald-50 text-emerald-800 border border-emerald-200/50 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase mb-2">
+                    <i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i>
+                    <span>Verified Clean Full Executive Report</span>
+                  </div>
+                  <h2 class="text-xl font-extrabold text-slate-900 tracking-tight heading-font">Auto Journal Ledger Analysis</h2>
+                  <p class="text-xs text-slate-500 font-medium mt-1 flex items-center">
+                    <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>
+                    Statement: <span class="font-bold text-slate-700 ml-1">Trading_Log_2026.xlsx</span>
+                    <span class="mx-2">•</span>
+                    Analyzed: <span class="font-semibold text-slate-600">June 29, 2026</span>
+                  </p>
+                </div>
+                <div class="text-left md:text-right">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Net Balance Result</span>
+                  <span class="text-2xl font-black text-emerald-600 tracking-tight heading-font">+$24,540.00</span>
+                  <p class="text-[10px] font-bold text-slate-500">Includes 18 parsed operations</p>
+                </div>
+              </div>
+
+              <!-- Executive Scorecards Row -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white border border-slate-200/60 p-5 rounded-2xl shadow-sm">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Inflow</span>
+                    <span class="p-1 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                  <h3 class="text-lg font-black text-slate-900">$36,200.00</h3>
+                  <p class="text-[9px] text-slate-400 mt-1 font-semibold">Deposits, salaries, and trade gains</p>
+                </div>
+                <div class="bg-white border border-slate-200/60 p-5 rounded-2xl shadow-sm">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Outflow</span>
+                    <span class="p-1 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                  <h3 class="text-lg font-black text-slate-900">-$11,660.00</h3>
+                  <p class="text-[9px] text-slate-400 mt-1 font-semibold">Withdrawals, commissions, and losses</p>
+                </div>
+                <div class="bg-white border border-slate-200/60 p-5 rounded-2xl shadow-sm">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Net Result</span>
+                    <span class="p-1 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                  <h3 class="text-lg font-black text-emerald-600">+$24,540.00</h3>
+                  <p class="text-[9px] text-slate-400 mt-1 font-semibold">Net profit margin for this interval</p>
+                </div>
+                <div class="bg-white border border-slate-200/60 p-5 rounded-2xl shadow-sm">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Win Rate / Performance</span>
+                    <span class="p-1 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="activity" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                  <h3 class="text-lg font-black text-slate-900">76.9%</h3>
+                  <p class="text-[9px] text-slate-400 mt-1 font-semibold">10 positive entries out of 13 trades</p>
+                </div>
+              </div>
+
+              <!-- Interactive Cumulative Balance Flow Graph -->
+              <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm space-y-4">
+                <div>
+                  <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Visual Flow Analytics</span>
+                  <h3 class="text-sm font-black text-slate-800 mt-1 heading-font">Cumulative Balance Flow & Volatility Timeline</h3>
+                  <p class="text-xs text-slate-500 font-medium">Tracks the real-time movement of funds as each operation is processed chronological.</p>
+                </div>
+                <!-- Premium SVG Simulated Line Chart with Hover Effects -->
+                <div class="relative w-full h-56 bg-slate-50 border border-slate-100 rounded-xl p-4">
+                  <div class="absolute inset-0 flex flex-col justify-between p-4 py-6 pointer-events-none text-[9px] font-bold text-slate-400">
+                    <div class="w-full flex justify-between border-b border-dashed border-slate-200 pb-1"><span>$30,000</span></div>
+                    <div class="w-full flex justify-between border-b border-dashed border-slate-200 pb-1"><span>$20,000</span></div>
+                    <div class="w-full flex justify-between border-b border-dashed border-slate-200 pb-1"><span>$10,000</span></div>
+                    <div class="w-full flex justify-between"><span>$0</span></div>
+                  </div>
+                  
+                  <!-- Main interactive SVG chart -->
+                  <svg class="w-full h-full pt-4" viewBox="0 0 1000 200" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="chart-glow" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"></stop>
+                        <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"></stop>
+                      </linearGradient>
+                    </defs>
+                    <!-- Fill Underneath -->
+                    <path d="M 0,180 L 100,160 L 200,165 L 300,130 L 400,140 L 500,90 L 600,110 L 700,60 L 800,40 L 900,45 L 1000,20 L 1000,200 L 0,200 Z" fill="url(#chart-glow)"></path>
+                    <!-- Area line -->
+                    <path d="M 0,180 L 100,160 L 200,165 L 300,130 L 400,140 L 500,90 L 600,110 L 700,60 L 800,40 L 900,45 L 1000,20" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    
+                    <!-- Points with interactive pulses -->
+                    <circle cx="300" cy="130" r="5" fill="#10b981" class="hover:scale-150 cursor-pointer transition-transform"></circle>
+                    <circle cx="500" cy="90" r="5" fill="#10b981" class="hover:scale-150 cursor-pointer transition-transform"></circle>
+                    <circle cx="800" cy="40" r="5" fill="#10b981" class="hover:scale-150 cursor-pointer transition-transform"></circle>
+                    <circle cx="1000" cy="20" r="6" fill="#059669" class="hover:scale-150 cursor-pointer transition-transform"></circle>
+                  </svg>
+                  
+                  <div class="absolute bottom-1 inset-x-4 flex justify-between text-[9px] font-bold text-slate-400 font-mono">
+                    <span>Jan 05</span>
+                    <span>Jan 18</span>
+                    <span>Feb 12</span>
+                    <span>Feb 28</span>
+                    <span>Mar 15</span>
+                    <span>Mar 31</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Major Surges & Highlights Row -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Peak Inflow card -->
+                <div class="bg-white border border-slate-200/60 p-5 rounded-2xl shadow-sm flex flex-col justify-between space-y-4">
+                  <div class="flex items-center space-x-2 text-slate-800">
+                    <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                    <span class="text-xs font-bold">Major Cash Flow Surges</span>
+                  </div>
+                  <div class="bg-emerald-50/40 border border-emerald-100 rounded-xl p-4 space-y-1">
+                    <p class="text-[9px] text-emerald-800 font-extrabold uppercase tracking-wider">Peak Surplus Entry</p>
+                    <p class="text-xl font-black text-slate-900 heading-font">+$14,250.00</p>
+                    <p class="text-xs text-slate-700 font-bold">Quarterly Premium Account Settlement</p>
+                    <p class="text-[9px] text-slate-400 font-semibold font-mono">Recorded on 2026-03-15</p>
+                  </div>
+                </div>
+
+                <!-- Peak Outflow card -->
+                <div class="bg-white border border-slate-200/60 p-5 rounded-2xl shadow-sm flex flex-col justify-between space-y-4">
+                  <div class="flex items-center space-x-2 text-slate-800">
+                    <span class="p-1.5 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="arrow-down-right" class="w-4 h-4"></i></span>
+                    <span class="text-xs font-bold">Largest Outflow Drain</span>
+                  </div>
+                  <div class="bg-rose-50/40 border border-rose-100 rounded-xl p-4 space-y-1">
+                    <p class="text-[9px] text-rose-800 font-extrabold uppercase tracking-wider">Peak Outflow Entry</p>
+                    <p class="text-xl font-black text-slate-900 heading-font">-$3,400.00</p>
+                    <p class="text-xs text-slate-700 font-bold">Options Trading Hedging Premium</p>
+                    <p class="text-[9px] text-slate-400 font-semibold font-mono">Recorded on 2026-02-12</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Other visual charts row (Categorical allocation & Monthly flow) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Categorical Distribution -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm space-y-4">
+                  <div>
+                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider heading-font">Categorical Allocation Breakdown</h4>
+                    <p class="text-[10px] text-slate-400 font-semibold">Distribution of absolute financial transactions</p>
+                  </div>
+                  <div class="flex items-center space-x-6 h-40">
+                    <div class="relative w-28 h-28 flex items-center justify-center shrink-0">
+                      <!-- Simulated Donut Chart SVG -->
+                      <svg class="w-full h-full transform -rotate-95" viewBox="0 0 36 36">
+                        <!-- Circle slices (Trading, Income, Expense, Transfer) -->
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="#cbd5e1" stroke-width="4"></circle>
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="#3b82f6" stroke-width="4" stroke-dasharray="60 100" stroke-dashoffset="0"></circle>
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="25 100" stroke-dashoffset="-60"></circle>
+                        <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f43f5e" stroke-width="4" stroke-dasharray="15 100" stroke-dashoffset="-85"></circle>
+                      </svg>
+                      <div class="absolute text-center">
+                        <span class="text-xs font-black text-slate-900 block">4 Categories</span>
+                        <span class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">Active</span>
+                      </div>
+                    </div>
+                    <div class="flex-1 space-y-1.5 text-[10px] font-bold text-slate-600">
+                      <div class="flex items-center justify-between">
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 bg-blue-500 rounded-full mr-1.5"></span> Trading</span>
+                        <span>$28,500.00 (60%)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 bg-emerald-500 rounded-full mr-1.5"></span> Income</span>
+                        <span>$11,860.00 (25%)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 bg-rose-500 rounded-full mr-1.5"></span> Expense</span>
+                        <span>$7,500.00 (15%)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Monthly flow comparative -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm space-y-4">
+                  <div>
+                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider heading-font">Monthly Inflow vs Outflow</h4>
+                    <p class="text-[10px] text-slate-400 font-semibold">Inflow and outflow comparative per monthly segment</p>
+                  </div>
+                  <div class="h-40 flex items-end justify-between px-4 pb-4">
+                    <!-- Dynamic Bars Mockup -->
+                    <div class="flex flex-col items-center space-y-2 w-12">
+                      <div class="flex space-x-1 items-end h-24">
+                        <div class="w-3 bg-emerald-500 rounded-t-sm h-16"></div>
+                        <div class="w-3 bg-rose-500 rounded-t-sm h-8"></div>
+                      </div>
+                      <span class="text-[9px] font-bold text-slate-400">January</span>
+                    </div>
+                    <div class="flex flex-col items-center space-y-2 w-12">
+                      <div class="flex space-x-1 items-end h-24">
+                        <div class="w-3 bg-emerald-500 rounded-t-sm h-12"></div>
+                        <div class="w-3 bg-rose-500 rounded-t-sm h-20"></div>
+                      </div>
+                      <span class="text-[9px] font-bold text-slate-400">February</span>
+                    </div>
+                    <div class="flex flex-col items-center space-y-2 w-12">
+                      <div class="flex space-x-1 items-end h-24">
+                        <div class="w-3 bg-emerald-500 rounded-t-sm h-24"></div>
+                        <div class="w-3 bg-rose-500 rounded-t-sm h-10"></div>
+                      </div>
+                      <span class="text-[9px] font-bold text-slate-400">March</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comprehensive Chronological Ledger Table with Blue Header (Requested change applied!) -->
+              <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm space-y-4">
+                <div>
+                  <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider heading-font">Chronological Ledger Log</h4>
+                  <p class="text-[10px] text-slate-400 font-semibold">Ledger log of parsed operations extracted in sequence</p>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <!-- Gorgeous solid blue header applied exactly as requested -->
+                      <tr class="bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-t-xl">
+                        <th class="py-3.5 px-4 rounded-l-xl">Date</th>
+                        <th class="py-3.5 px-4">Description</th>
+                        <th class="py-3.5 px-4">Category</th>
+                        <th class="py-3.5 px-4 text-right rounded-r-xl">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-xs text-slate-700 font-medium">
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-03-31</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Index futures trading settlement gain</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[9px] font-extrabold uppercase">Trading</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-600">+$4,500.00</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-03-15</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Quarterly Premium Account Settlement</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md text-[9px] font-extrabold uppercase">Income</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-600">+$14,250.00</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-02-28</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Stock commission brokerage charge</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-rose-50 text-rose-700 rounded-md text-[9px] font-extrabold uppercase">Expense</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-rose-600">-$340.00</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-02-12</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Options Trading Hedging Premium</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[9px] font-extrabold uppercase">Trading</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-rose-600">-$3,400.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ==================== SUB-TAB 2: OVERVIEW SUMMARY ==================== -->
+            <div id="tab-content-overview" class="hidden space-y-6 max-w-5xl mx-auto">
+              <!-- Grid of cards focusing strictly on numbers and stats summaries -->
+              <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+                <h3 class="text-sm font-black text-slate-900 mb-4 heading-font">Executive Ledger Briefing</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div class="bg-slate-50 rounded-xl p-5 space-y-2 border border-slate-100">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Primary Income Source</span>
+                    <span class="text-base font-extrabold text-slate-800">Direct Inflow Account</span>
+                    <p class="text-xs text-slate-500">Major premium settlement credited at Q1 closure.</p>
+                  </div>
+                  <div class="bg-slate-50 rounded-xl p-5 space-y-2 border border-slate-100">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Biggest Outflow Outlet</span>
+                    <span class="text-base font-extrabold text-slate-800">Commission & Trading hedging</span>
+                    <p class="text-xs text-slate-500">Total brokerage charges accumulated across operations.</p>
+                  </div>
+                  <div class="bg-slate-50 rounded-xl p-5 space-y-2 border border-slate-100">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Ledger Classification Quality</span>
+                    <span class="text-base font-extrabold text-emerald-600">98% Accuracy Index</span>
+                    <p class="text-xs text-slate-500">Categorizations mapped with pristine precision rules.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==================== SUB-TAB 3: VISUAL CHARTS ==================== -->
+            <div id="tab-content-charts" class="hidden space-y-6 max-w-5xl mx-auto">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Large categorical breakdown details -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+                  <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-4 heading-font">In-Depth Categorical Split</h3>
+                  <div class="space-y-4">
+                    <div>
+                      <div class="flex justify-between text-xs font-bold mb-1">
+                        <span>Trading Operations</span>
+                        <span>$28,500.00</span>
+                      </div>
+                      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="bg-blue-600 h-full rounded-full" style="width: 60%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-xs font-bold mb-1">
+                        <span>Salary & Direct Income</span>
+                        <span>$11,860.00</span>
+                      </div>
+                      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="bg-emerald-500 h-full rounded-full" style="width: 25%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-xs font-bold mb-1">
+                        <span>Merchant buys & Fees</span>
+                        <span>$7,500.00</span>
+                      </div>
+                      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="bg-rose-500 h-full rounded-full" style="width: 15%"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Monthly Flow statistics log -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+                  <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-4 heading-font">Volatility Timeline Index</h3>
+                  <div class="p-4 bg-slate-50 rounded-xl space-y-3">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <span>Maximum daily positive shift:</span>
+                      <span class="text-emerald-600">+$14,250.00</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <span>Maximum daily negative drawdown:</span>
+                      <span class="text-rose-600">-$3,400.00</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <span>Average transaction size:</span>
+                      <span>+$1,363.33</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==================== SUB-TAB 4: LEDGER TABLE ==================== -->
+            <div id="tab-content-table" class="hidden space-y-6 max-w-5xl mx-auto">
+              <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm">
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <!-- Same blue heading requested, isolated in table view -->
+                      <tr class="bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-t-xl">
+                        <th class="py-3.5 px-4 rounded-l-xl">Date</th>
+                        <th class="py-3.5 px-4">Description</th>
+                        <th class="py-3.5 px-4">Category</th>
+                        <th class="py-3.5 px-4 text-right rounded-r-xl">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-xs text-slate-700 font-medium">
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-03-31</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Index futures trading settlement gain</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[9px] font-extrabold uppercase">Trading</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-600">+$4,500.00</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-03-15</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Quarterly Premium Account Settlement</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md text-[9px] font-extrabold uppercase">Income</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-600">+$14,250.00</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-02-28</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Stock commission brokerage charge</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-rose-50 text-rose-700 rounded-md text-[9px] font-extrabold uppercase">Expense</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-rose-600">-$340.00</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">2026-02-12</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-800">Options Trading Hedging Premium</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[9px] font-extrabold uppercase">Trading</span></td>
+                        <td class="py-3.5 px-4 text-right font-mono font-bold text-rose-600">-$3,400.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Interactive Exporting Loader Modal (Simulating High Fidelity render) -->
+  <div id="export-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 p-8 max-w-sm w-full text-center space-y-6 shadow-2xl animate-fade-in">
+      <div class="relative w-16 h-16 mx-auto flex items-center justify-center text-blue-600">
+        <div class="absolute inset-0 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin"></div>
+        <i data-lucide="file-output" class="w-6 h-6"></i>
+      </div>
+      <div class="space-y-1.5">
+        <h4 id="export-title" class="text-base font-black heading-font text-slate-900">Exporting Full Report...</h4>
+        <p class="text-xs text-slate-500 font-semibold">Simulating layout capture & offline high-fidelity export renderer.</p>
+      </div>
+      <!-- Fake progress bar inside modal -->
+      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+        <div id="export-progress" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Success Notification Toast -->
+  <div id="toast-success" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-500 bg-slate-900 text-white rounded-2xl p-4 shadow-xl border border-slate-800 max-w-xs flex items-center space-x-3.5 pointer-events-none">
+    <div class="p-2 bg-emerald-500 text-white rounded-xl shadow-md"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+    <div>
+      <p class="text-xs font-extrabold" id="toast-title">Export Completed!</p>
+      <p class="text-[10px] text-slate-400 font-semibold" id="toast-message">File downloaded successfully</p>
+    </div>
+  </div>
+
+  <!-- Features Highlight grid -->
+  <section class="max-w-6xl w-full mx-auto px-4 md:px-8 py-12 border-t border-slate-200">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-800">
+      <div class="space-y-2 bg-white rounded-2xl border border-slate-200/50 p-6 shadow-sm">
+        <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl w-fit"><i data-lucide="cpu" class="w-5 h-5"></i></div>
+        <h3 class="text-sm font-extrabold heading-font">Deep AI Extract Core</h3>
+        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+          Powered by state-of-the-art Large Language Models. Automatically maps and classifies unstructured statement rows into verified transaction nodes.
+        </p>
+      </div>
+      <div class="space-y-2 bg-white rounded-2xl border border-slate-200/50 p-6 shadow-sm">
+        <div class="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl w-fit"><i data-lucide="file-check-2" class="w-5 h-5"></i></div>
+        <h3 class="text-sm font-extrabold heading-font">Dual-Mode Exports</h3>
+        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+          Generate complete high-fidelity PDF documents or convert statements directly into sharp offline JPEG images for easy mobile sharing.
+        </p>
+      </div>
+      <div class="space-y-2 bg-white rounded-2xl border border-slate-200/50 p-6 shadow-sm">
+        <div class="p-2.5 bg-purple-50 text-purple-600 rounded-xl w-fit"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
+        <h3 class="text-sm font-extrabold heading-font">Strict Offline Isolation</h3>
+        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+          Secure client sessions and temporary databases keep your sensitive transaction history strictly confined within local memory segments.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Walkthrough Footer -->
+  <footer class="bg-white border-t border-slate-200/80 py-8 px-6 text-center shrink-0">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
+      <span>Auto-Journal Walkthrough © 2026</span>
+      <div class="flex space-x-6">
+        <a href="/" class="hover:text-blue-600 transition-colors">Start Real App</a>
+        <a href="#" class="hover:text-blue-600 transition-colors">Documentation</a>
+        <a href="#" class="hover:text-blue-600 transition-colors">Github Code</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Initialize Lucide icons on load
+    lucide.createIcons();
+
+    // ------------------- SIMULATED WALKTHROUGH PIPELINE LOGIC -------------------
+
+    // Stages navigation helpers
+    function switchStage(stageId) {
+      document.getElementById('stage-upload').classList.add('hidden');
+      document.getElementById('stage-extracting').classList.add('hidden');
+      document.getElementById('stage-report').classList.add('hidden');
+
+      document.getElementById(stageId).classList.remove('hidden');
+    }
+
+    // Extraction Logs database to simulate realistic processing
+    const logsDb = [
+      "Initializing AI parser subsystem...",
+      "Reading uploaded file Trading_Log_2026.xlsx as binary buffer...",
+      "Converting worksheet 'Trades_List' rows to unified text arrays...",
+      "Recognized Excel structure: 4 columns detected (Date, Desc, Group, Sum)...",
+      "Spawning Groq LLM processing thread...",
+      "Scanning row 1: 'Index futures trading gain' parsed successfully -> Trading: +$4500.00",
+      "Scanning row 2: 'Quarterly Premium Account Settlement' parsed successfully -> Income: +$14250.00",
+      "Scanning row 3: 'Stock commission brokerage charge' parsed -> Expense: -$340.00",
+      "Scanning row 4: 'Options Trading Hedging Premium' parsed -> Trading: -$3400.00",
+      "Calculating cumulative balance timeline metrics...",
+      "Aggregating 4 active categories of transaction segments...",
+      "Synthesizing visual performance scorecards...",
+      "Compiling final Executive Report payload..."
+    ];
+
+    function triggerDemoExtraction() {
+      // Step 1: Switch to parsing stage
+      switchStage('stage-extracting');
+      
+      // Step 2: Simulate typing terminal logs
+      const terminalDiv = document.getElementById('terminal-logs');
+      terminalDiv.innerHTML = ''; // clear
+      
+      let logIndex = 0;
+      let progress = 0;
+      const progressEl = document.getElementById('extraction-progress');
+
+      const logTimer = setInterval(() => {
+        if (logIndex < logsDb.length) {
+          const logLine = document.createElement('div');
+          logLine.className = "flex items-start space-x-1.5 animate-fade-in";
+          logLine.innerHTML = `<span class="text-blue-500 shrink-0">❯</span> <span>${logsDb[logIndex]}</span>`;
+          terminalDiv.appendChild(logLine);
+          
+          // Scroll to bottom
+          terminalDiv.scrollTop = terminalDiv.scrollHeight;
+
+          // Bump progress
+          logIndex++;
+          progress = Math.min(100, Math.floor((logIndex / logsDb.length) * 100));
+          progressEl.style.width = `${progress}%`;
+        } else {
+          clearInterval(logTimer);
+          // Wait a slight fraction and show final report screen
+          setTimeout(() => {
+            switchStage('stage-report');
+            showToast("Parsing Completed!", "Report synthesized successfully with 18 transactions.");
+          }, 600);
+        }
+      }, 300);
+    }
+
+    function resetDemo() {
+      switchStage('stage-upload');
+      switchTab('full');
+    }
+
+    // Tab Switching inside Report Screen
+    function switchTab(tabId) {
+      // Reset all tab content divs
+      document.getElementById('tab-content-full').classList.add('hidden');
+      document.getElementById('tab-content-overview').classList.add('hidden');
+      document.getElementById('tab-content-charts').classList.add('hidden');
+      document.getElementById('tab-content-table').classList.add('hidden');
+
+      // Reset button highlights
+      const btns = ['full', 'overview', 'charts', 'table'];
+      btns.forEach(b => {
+        const btn = document.getElementById(`tab-btn-${b}`);
+        btn.className = "py-3 px-4 font-bold text-xs border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition-all cursor-pointer whitespace-nowrap";
+      });
+
+      // Highlight target button and show target content
+      document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
+      const targetBtn = document.getElementById(`tab-btn-${tabId}`);
+      targetBtn.className = "py-3 px-4 font-black text-xs border-b-2 border-blue-600 text-blue-600 transition-all cursor-pointer whitespace-nowrap";
+    }
+
+    // Simulated Exporting workflow (PDF/Image)
+    function triggerExport(type) {
+      const modal = document.getElementById('export-modal');
+      const title = document.getElementById('export-title');
+      const progressEl = document.getElementById('export-progress');
+
+      title.innerText = type === 'PDF' ? "Generating High-Fidelity PDF..." : "Converting to Offline Image...";
+      progressEl.style.width = "0%";
+      modal.classList.remove('hidden');
+
+      let progress = 0;
+      const exportTimer = setInterval(() => {
+        progress += 15;
+        if (progress >= 100) {
+          progressEl.style.width = "100%";
+          clearInterval(exportTimer);
+          setTimeout(() => {
+            modal.classList.add('hidden');
+            // Trigger download prompt simulation via toast
+            showToast(
+              type === 'PDF' ? "PDF Downloaded!" : "Image Converted!",
+              type === 'PDF' 
+                ? "Full Executive Report successfully exported as PDF." 
+                : "Full Executive Report converted to premium JPEG image."
+            );
+          }, 450);
+        } else {
+          progressEl.style.width = `${progress}%`;
+        }
+      }, 150);
+    }
+
+    // Simulated Toast Notifier
+    function showToast(title, message) {
+      const toast = document.getElementById('toast-success');
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-message').innerText = message;
+
+      // Slide in
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      // Slide out after 3.5s
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
